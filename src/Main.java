@@ -1,3 +1,9 @@
+import entities.User;
+import exceptions.StringNotValidException;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
 public class Main {
 	public static void main(String[] args) {
 		// ----------------------------- ERRORS ------------------------------
@@ -17,7 +23,7 @@ public class Main {
 
 		System.out.println("Caro utente, dammi un numero");
 		String input = "un numero";
-		/*		System.out.println(Integer.parseInt(input)); // NumberFormatException*/
+		// System.out.println(Integer.parseInt(input)); // NumberFormatException*/
 
 		String str = "Qualcosa";
 		str = null;
@@ -41,6 +47,55 @@ public class Main {
 			throw new RuntimeException(e);
 		}
 		System.out.println("CIAO");
+
+		// --------------------------- CUSTOM EXCEPTIONS ----------------------------
+		// throw new NumberLessThanZeroException(-20); // Tramite 'throw' lancio in maniera volontaria un'eccezione
+
+		User aldo = new User("Aldo", "Baglio");
+		try {
+			aldo.setName("A");
+		} catch (StringNotValidException e) {
+			System.out.println(e.getMessage());
+		}
+
+		System.out.println(aldo);
+
+		// --------------------------- TRY-CATCH ----------------------------
+		User giova = new User("Giovanni", "Storti");
+
+		try {
+			giova.setName("G");
+		} catch (StringNotValidException | ArithmeticException ex) {
+			// Catch multi-eccezione. Ovvero mi serve per gestire 2 o più tipi di eccezione alla stessa maniera
+			System.out.println(ex.getMessage());
+		} catch (NullPointerException ex) {
+			// Facendo più catch posso permettermi di trattare eccezioni diverse in maniera diversa
+			System.out.println("Attenzione c'è stata una null pointer exception");
+		} catch (Exception ex) {
+			// Posso avere anche un catch 'polimorfico' che mi catchi in maniera generica più tipi di eccezione
+			System.out.println("C'è stato un errore generico!");
+		}
+
+		// --------------------------- TRY-CATCH-FINALLY ----------------------------
+		Scanner scanner = new Scanner(System.in);
+
+		int[] numbers2 = {0, 1, 2, 3};
+
+		System.out.println("Inserisci un numero da 1 a 4");
+		try {
+			int i = scanner.nextInt();
+			System.out.println(5 / numbers2[i]);
+		} catch (InputMismatchException ex) {
+			System.out.println("Non hai inserito un numero intero!");
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		} finally {
+			scanner.close(); // Non importa se è andato tutto bene oppure se c'è stata un'eccezione, il blocco finally verrà eseguito comunque
+			// Pertanto risulta utile (non è obbligatorio) in tante situazione come in quelle nelle quali è bene ricordarsi di rilasciare delle risorse
+			// es. chiudere scanner, chiudere una connessione ad un db
+		}
+
+
 	}
 
 	public static void print(String message) {
